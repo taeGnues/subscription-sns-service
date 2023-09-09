@@ -14,18 +14,22 @@ spring:
     init:
       platform: mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/demo?autoReconnect=true&setTimezone=Asia/Seoul # 변경해주세요
-    username: # username
-    password: # password
+    url: jdbc:mysql://localhost:3306/gridgestagram?autoReconnect=true&setTimezone=Asia/Seoul # 변경해주세요
+    username: root
+    password: a01084204241
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
     # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
   OAuth2:
-    google:
-      url: https://accounts.google.com/o/oauth2/v2/auth
-      client-id: # client-id
-      client-secret:  # client-secret
-      callback-login-url: http://localhost:9000/app/users/auth/google/login/callback # 등록한 정보에 맞게 수정해주세요
-      scope: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile # 등록한 정보에 맞게 수정해주세요
+    kakao:
+      url: https://kauth.kakao.com/oauth/authorize
+      client-id: 7c8dce76f04cb7bcf9d265fa84c4dde2 # 앱 REST API 키
+      callback-login-url: https://localhost:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
+#    google:
+#      url: https://accounts.google.com/o/oauth2/v2/auth
+#      client-id: # client-id
+#      client-secret:  # client-secret
+#      callback-login-url: http://localhost:9000/app/users/auth/google/login/callback # 등록한 정보에 맞게 수정해주세요
+#      scope: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile # 등록한 정보에 맞게 수정해주세요
 
 spring.sql.init.platform: mysql
 server:
@@ -46,8 +50,8 @@ springdoc:
   paths-to-match:
     - /**
 
-jwt:
-  secret-key: UwKYibQQgkW7g-*k.ap9kje-wxBHb9wdXoBT4vnt4P3sJWt-Nu  # JWT key. 수정해주세요
+#jwt:
+#  secret-key: UwKYibQQgkW7g-*k.ap9kje-wxBHb9wdXoBT4vnt4P3sJWt-Nu  # JWT key. 수정해주세요
 
 ---
 spring:

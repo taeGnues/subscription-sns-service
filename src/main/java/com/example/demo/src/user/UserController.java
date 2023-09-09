@@ -138,7 +138,7 @@ public class UserController {
 
 
     /**
-     * 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url
+     * 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url => Step01. '인가코드 받는 URI'
      * [GET] /app/users/auth/:socialLoginType/login
      * @return void
      */
@@ -160,7 +160,7 @@ public class UserController {
     public BaseResponse<GetSocialOAuthRes> socialLoginCallback(
             @PathVariable(name = "socialLoginType") String socialLoginPath,
             @RequestParam(name = "code") String code) throws IOException, BaseException{
-        log.info(">> 소셜 로그인 API 서버로부터 받은 code : {}", code);
+        log.info(">> 소셜 로그인 API 서버로부터 받은 인가 code : {}", code);
         SocialLoginType socialLoginType = SocialLoginType.valueOf(socialLoginPath.toUpperCase());
         GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(socialLoginType,code);
         return new BaseResponse<>(getSocialOAuthRes);
