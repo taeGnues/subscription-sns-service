@@ -9,9 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,9 +32,6 @@ public class KakaoOauth implements SocialOauth {
 
     @Value("${spring.OAuth2.kakao.callback-login-url}")
     private String KAKAO_SNS_CALLBACK_LOGIN_URL; // 인가 코드를 전달받을 서비스 서버의 URI
-
-    @Value("${spring.OAuth2.google.client-secret}")
-    private String GOOGLE_SNS_CLIENT_SECRET;
 
 //    @Value("${spring.OAuth2.google.scope}")
 //    private String GOOGLE_DATA_ACCESS_SCOPE; // 추가 항목 동의 받기 요청 시 사용
@@ -80,15 +79,22 @@ public class KakaoOauth implements SocialOauth {
     public ResponseEntity<String> requestAccessToken(String code) {
         String KAKAO_TOKEN_REQUEST_URL = "https://kauth.kakao.com/oauth/token";
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, Object> params = new HashMap<>();
-        params.put("code", code);
-        params.put("client_id", KAKAO_SNS_CLIENT_ID);
-//        params.put("client_secret", GOOGLE_SNS_CLIENT_SECRET);
-        params.put("redirect_uri", KAKAO_SNS_CALLBACK_LOGIN_URL);
-        params.put("grant_type", "authorization_code"); // 고정.
+
+        HttpHeaders headers = new HttpHeaders(); // Header 설정. Content-type을 둬야함.
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("Accept", "application/json");
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(); // 본문 설정.
+        params.put("grant_type", Collections.singletonList("authorization_code")); // 고정.
+        params.put("client_id", Collections.singletonList(KAKAO_SNS_CLIENT_ID));
+        params.put("redirect_uri", Collections.singletonList(KAKAO_SNS_CALLBACK_LOGIN_URL));
+        params.put("code", Collections.singletonList(code));
+//        params.put("client_secret", GOOGLE_SNS_CLIENT_SECRET); 선택적.
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         ResponseEntity<String> responseEntity=restTemplate.postForEntity(KAKAO_TOKEN_REQUEST_URL,
-                params,String.class);
+                request,String.class);
 
         if(responseEntity.getStatusCode() == HttpStatus.OK){
             return responseEntity;
@@ -116,7 +122,7 @@ public class KakaoOauth implements SocialOauth {
         headers.add("Authorization","Bearer "+oAuthToken.getAccess_token());
         headers.add("Content-type", "application/json;charset=utf-8");
 
-        //HttpEntity를 하나 생성해 헤더를 담아서 restTemplate으로 구글과 통신하게 된다.
+        //HttpEntity를 하나 생성해 헤더를 담아서 restTemplate으로 카카오와 통신하게 된다.
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
         ResponseEntity<String> response = restTemplate.exchange(KAKAO_USERINFO_REQUEST_URL, HttpMethod.GET,request,String.class);
 
@@ -126,7 +132,8 @@ public class KakaoOauth implements SocialOauth {
     }
 
     public KakaoUser getUserInfo(ResponseEntity<String> userInfoRes) throws JsonProcessingException{
-        KakaoUser kakaoUser = objectMapper.readValue(userInfoRes.getBody(),KakaoUser.class);
+        KakaoUser kakaoUser = objectMapper.readValue(userInfoRes.getBody(), KakaoUser.class);
+        log.info("kakaoUser = {}", kakaoUser.toString());
         return kakaoUser;
     }
 }

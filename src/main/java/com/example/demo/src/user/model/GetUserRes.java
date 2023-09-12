@@ -12,13 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetUserRes {
-    private Long id;
-    private String email;
+    private Long userIdx;
+    private String userId;
     private String name;
 
     public GetUserRes(User user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
+        this.userIdx = user.getUserIdx();
+        this.userId = user.getUserID();
         this.name = user.getName();
     }
 }

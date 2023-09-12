@@ -23,7 +23,7 @@ spring:
     kakao:
       url: https://kauth.kakao.com/oauth/authorize
       client-id: 7c8dce76f04cb7bcf9d265fa84c4dde2 # 앱 REST API 키
-      callback-login-url: https://localhost:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
+      callback-login-url: http://localhost:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
 #    google:
 #      url: https://accounts.google.com/o/oauth2/v2/auth
 #      client-id: # client-id
@@ -50,8 +50,8 @@ springdoc:
   paths-to-match:
     - /**
 
-#jwt:
-#  secret-key: UwKYibQQgkW7g-*k.ap9kje-wxBHb9wdXoBT4vnt4P3sJWt-Nu  # JWT key. 수정해주세요
+jwt:
+  secret-key: UwKYibQQgkW7g-*k.ap9kje-wxBHb9wdXoBT4vnt4P3sJWt-Nu  # JWT key. 서버에서 쓰는 비밀키 (비대칭 암호화)
 
 ---
 spring:

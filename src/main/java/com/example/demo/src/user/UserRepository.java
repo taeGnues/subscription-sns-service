@@ -10,9 +10,11 @@ import static com.example.demo.common.entity.BaseEntity.*;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByIdAndState(Long id, State state);
-    Optional<User> findByEmailAndState(String email, State state);
-    List<User> findAllByEmailAndState(String email, State state);
+    Optional<User> findByUserIdxAndState(Long userIdx, State state);
+    Optional<User> findByUserIDAndState(String userID, State state);
+    Optional<User> findByPhoneNum(String phoneNum);
+
+    Optional<User> findByUserID(String userID);
     List<User> findAllByState(State state);
 
 }

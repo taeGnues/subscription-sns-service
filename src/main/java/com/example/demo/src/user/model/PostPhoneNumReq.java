@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaoAccount {
-    public String email;
-    public Profile profile;
+public class PostPhoneNumReq {
+    private String phoneNum;
 }

@@ -23,7 +23,7 @@ public class OAuthService {
     private final JwtService jwtService;
 
 
-    public void accessRequest(Constant.SocialLoginType socialLoginType) throws IOException {
+    public String accessRequest(Constant.SocialLoginType socialLoginType) throws IOException {
         String redirectURL;
         switch (socialLoginType){ //각 소셜 로그인을 요청하면 소셜로그인 페이지로 리다이렉트 해주는 프로세스이다.
             case KAKAO:{
@@ -38,7 +38,7 @@ public class OAuthService {
 
         }
 
-        response.sendRedirect(redirectURL);
+        return redirectURL;
     }
 
 
@@ -53,24 +53,24 @@ public class OAuthService {
 
                 //액세스 토큰을 다시 카카오로 보내 카카오에 저장된 사용자 정보가 담긴 응답 객체를 받아온다.
                 ResponseEntity<String> userInfoResponse = kakaoOauth.requestUserInfo(oAuthToken);
-                //다시 JSON 형식의 응답 객체를 자바 객체로기 역직렬화한다.
+                //다시 JSON 형식의 응답 객체를 자바 객체로 역직렬화한다.
                 KakaoUser kakaoUser = kakaoOauth.getUserInfo(userInfoResponse);
 
                 //우리 서버의 db와 대조하여 해당 user가 존재하는 지 확인한다.
-                if(userService.checkUserByEmail(kakaoUser.getKakaoAccount().getEmail())) { // user가 DB에 있다면, 로그인 진행
-                    // 유저 정보 조회
-                    GetUserRes getUserRes = userService.getUserByEmail(kakaoUser.getKakaoAccount().getEmail());
+                if(userService.checkUserByUserID(kakaoUser.getKakaoAccount().getEmail())) { // user가 DB에 있다면, 로그인 진행
+                    // 유저 정보 조회 (사용자 이름으로)
+                    GetUserRes getUserRes = userService.getUserByUserID(kakaoUser.getKakaoAccount().getEmail());
 
                     //서버에 user가 존재하면 앞으로 회원 인가 처리를 위한 jwtToken을 발급한다.
-                    String jwtToken = jwtService.createJwt(getUserRes.getId());
+                    String jwtToken = jwtService.createJwt(getUserRes.getUserIdx());
 
                     //액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
-                    GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(jwtToken, getUserRes.getId(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
+                    GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(jwtToken, getUserRes.getUserIdx(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
                     return getSocialOAuthRes;
                 }else { // user가 DB에 없다면, 회원가입 진행
                     // 유저 정보 저장
                     PostUserRes postUserRes = userService.createOAuthUser(kakaoUser.toEntity());
-                    GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(postUserRes.getJwt(), postUserRes.getId(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
+                    GetSocialOAuthRes getSocialOAuthRes = new GetSocialOAuthRes(postUserRes.getJwt(), postUserRes.getUserIdx(), oAuthToken.getAccess_token(), oAuthToken.getToken_type());
                     return getSocialOAuthRes;
                 }
             }

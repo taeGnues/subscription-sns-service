@@ -18,10 +18,16 @@ public enum BaseResponseStatus {
      * 400 : Request, Response 오류
      */
 
-    USERS_EMPTY_EMAIL(false, HttpStatus.BAD_REQUEST.value(), "이메일을 입력해주세요."),
+    USERS_EMPTY_PHONENUM(false, HttpStatus.BAD_REQUEST.value(), "전화번호를 입력해주세요."),
+    USERS_EMPTY_NAME(false, HttpStatus.BAD_REQUEST.value(), "이름를 입력해주세요."),
+    USERS_EMPTY_USERID(false, HttpStatus.BAD_REQUEST.value(), "사용자 이름을 입력해주세요."),
+    USERS_EMPTY_PASSWORD(false, HttpStatus.BAD_REQUEST.value(), "비밀번호를 입력해주세요."),
+    USERS_EMPTY_BIRTHDATE(false, HttpStatus.BAD_REQUEST.value(), "생년월일을 입력해주세요."),
+    USERS_INFO_UNKNOWN(false, HttpStatus.BAD_REQUEST.value(), "알 수 없는 유저입니다."),
+
     TEST_EMPTY_COMMENT(false, HttpStatus.BAD_REQUEST.value(), "코멘트를 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, HttpStatus.BAD_REQUEST.value(), "이메일 형식을 확인해주세요."),
-    POST_USERS_EXISTS_EMAIL(false,HttpStatus.BAD_REQUEST.value(),"중복된 이메일입니다."),
+    POST_USERS_EXISTS_USERID(false,HttpStatus.BAD_REQUEST.value(),"중복된 사용자입니다."),
     POST_TEST_EXISTS_MEMO(false,HttpStatus.BAD_REQUEST.value(),"중복된 메모입니다."),
 
     RESPONSE_ERROR(false, HttpStatus.NOT_FOUND.value(), "값을 불러오는데 실패하였습니다."),

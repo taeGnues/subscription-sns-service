@@ -10,10 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostUserRes {
-    private Long id;
+    private Long userIdx;
     private String jwt;
 
-    public PostUserRes(Long id) {
-        this.id = id;
+    public PostUserRes(Long userIdx) {
+        this.userIdx = userIdx;
     }
 }

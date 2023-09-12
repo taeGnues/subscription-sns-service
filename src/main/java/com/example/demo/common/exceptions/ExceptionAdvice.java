@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice // Controller에서 발생하는 Exception 잡아줌. ControllerAdvice와 Responsebody를 갖고 있으며, Responsebody를 통해 객체 리턴 가능
 public class ExceptionAdvice {
 
-    @ExceptionHandler(BaseException.class)
+    @ExceptionHandler(BaseException.class) // HTTP 오류 처리
     public BaseResponse<BaseResponseStatus> BaseExceptionHandle(BaseException exception) {
         log.warn("BaseException. error message: {}", exception.getMessage());
         return new BaseResponse<>(exception.getStatus());

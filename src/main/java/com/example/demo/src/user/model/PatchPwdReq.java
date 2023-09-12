@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profile {
-    String nickname;
-    String profile_image_url;
+public class PatchPwdReq {
+    private Long userIdx;
+    private String password;
 }

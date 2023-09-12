@@ -6,23 +6,39 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostUserReq {
-    private String email;
-    private String password;
+
+    private String phoneNum;
+
     private String name;
 
-    private boolean isOAuth;
+    private String userID;
+
+    private String password;
+
+    private LocalDate birthDate; // 생년월일
+
 
     public User toEntity() {
         return User.builder()
-                .email(this.email)
-                .password(this.password)
+                .phoneNum(this.phoneNum)
                 .name(this.name)
-                .isOAuth(this.isOAuth)
+                .userID(this.userID)
+                .password(this.password)
+                .birthDate(this.birthDate)
+                .userStatus(User.UserStatus.ACTIVE)
+                .lastestLoginAt(new Timestamp(System.currentTimeMillis()))
                 .build();
     }
 }

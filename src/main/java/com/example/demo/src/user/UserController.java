@@ -32,46 +32,81 @@ public class UserController {
     private final JwtService jwtService;
 
 
-    /**
-     * 회원가입 API
-     * [POST] /app/users
-     * @return BaseResponse<PostUserRes>
-     */
-    // Body
-    @ResponseBody
+    /* 일반 회원 가입 API */
+    @ResponseBody // BODY
     @PostMapping("")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
-        if(postUserReq.getEmail() == null){
-            return new BaseResponse<>(USERS_EMPTY_EMAIL);
+        // 형식적 데이터 검사.
+
+        if(postUserReq.getPhoneNum() == null){
+            return new BaseResponse<>(USERS_EMPTY_PHONENUM);
         }
-        //이메일 정규표현
-        if(!isRegexEmail(postUserReq.getEmail())){
-            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+        if(postUserReq.getName() == null){
+            return new BaseResponse<>(USERS_EMPTY_NAME);
         }
+        if(postUserReq.getUserID() == null){
+            return new BaseResponse<>(USERS_EMPTY_USERID);
+        }
+        if(postUserReq.getPassword() == null){
+            return new BaseResponse<>(USERS_EMPTY_PASSWORD);
+        }
+        if(postUserReq.getBirthDate() == null){
+            return new BaseResponse<>(USERS_EMPTY_BIRTHDATE);
+        }
+
         PostUserRes postUserRes = userService.createUser(postUserReq);
         return new BaseResponse<>(postUserRes);
     }
 
-    /**
+
+    /* 비밀번호 찾기 로직 */
+
+    /* 전화번호로 회원 존재 확인 -> userIdx 리턴 */
+    /* GET */
+    @ResponseBody
+    @GetMapping("/changepwd")
+    public BaseResponse<Long> findUserByPhoneNum(@RequestBody PostPhoneNumReq postPhoneNumReq){
+        if(postPhoneNumReq.getPhoneNum() == null){
+            return new BaseResponse<>(USERS_EMPTY_PHONENUM);
+        }
+
+        Long userIdx = userService.findUserByPhoneNum(postPhoneNumReq.getPhoneNum());
+
+        return new BaseResponse<>(userIdx);
+    }
+
+    /* userIdx로 찾은 유저 비밀번호 변경해주기 */
+    @ResponseBody
+    @PatchMapping("/changepwd")
+    public BaseResponse<String> changePassword(@RequestBody PatchPwdReq patchPwdReq){
+        if(patchPwdReq.getUserIdx() == null){
+            return new BaseResponse<>(USERS_INFO_UNKNOWN);
+        }
+
+        String res = userService.changePassword(patchPwdReq);
+
+        return new BaseResponse<>(res);
+    }
+
+    /** 전체 회원 조회
      * 회원 조회 API
      * [GET] /users
-     * 회원 번호 및 이메일 검색 조회 API
+     * 회원 번호 및 전화번호 검색 조회 API
      * [GET] /app/users? Email=
      * @return BaseResponse<List<GetUserRes>>
      */
     //Query String
-    @ResponseBody
-    @GetMapping("") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String Email) {
-        if(Email == null){
-            List<GetUserRes> getUsersRes = userService.getUsers();
-            return new BaseResponse<>(getUsersRes);
-        }
-        // Get Users
-        List<GetUserRes> getUsersRes = userService.getUsersByEmail(Email);
-        return new BaseResponse<>(getUsersRes);
-    }
+//    @ResponseBody
+//    @GetMapping("") // (GET) 127.0.0.1:9000/app/users
+//    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String Email) {
+//        if(Email == null){
+//            List<GetUserRes> getUsersRes = userService.getUsers();
+//            return new BaseResponse<>(getUsersRes);
+//        }
+//        // Get Users
+//        List<GetUserRes> getUsersRes = userService.getUsers(Email);
+//        return new BaseResponse<>(getUsersRes);
+//    }
 
     /**
      * 회원 1명 조회 API
@@ -80,9 +115,9 @@ public class UserController {
      */
     // Path-variable
     @ResponseBody
-    @GetMapping("/{userId}") // (GET) 127.0.0.1:9000/app/users/:userId
-    public BaseResponse<GetUserRes> getUser(@PathVariable("userId") Long userId) {
-        GetUserRes getUserRes = userService.getUser(userId);
+    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userId
+    public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") Long userIdx) {
+        GetUserRes getUserRes = userService.getUser(userIdx);
         return new BaseResponse<>(getUserRes);
     }
 
@@ -93,18 +128,18 @@ public class UserController {
      * [PATCH] /app/users/:userId
      * @return BaseResponse<String>
      */
-    @ResponseBody
-    @PatchMapping("/{userId}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq){
-
-        Long jwtUserId = jwtService.getUserId();
-
-        userService.modifyUserName(userId, patchUserReq);
-
-        String result = "수정 완료!!";
-        return new BaseResponse<>(result);
-
-    }
+//    @ResponseBody
+//    @PatchMapping("/{userIdx}")
+//    public BaseResponse<String> modifyUserName(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq){
+//
+//        Long jwtUserId = jwtService.getUserIdx();
+//
+//        userService.modifyUserName(userId, patchUserReq);
+//
+//        String result = "수정 완료!!";
+//        return new BaseResponse<>(result);
+//
+//    }
 
     /**
      * 유저정보삭제 API
@@ -114,7 +149,7 @@ public class UserController {
     @ResponseBody
     @DeleteMapping("/{userId}")
     public BaseResponse<String> deleteUser(@PathVariable("userId") Long userId){
-        Long jwtUserId = jwtService.getUserId();
+        Long jwtUserId = jwtService.getUserIdx();
 
         userService.deleteUser(userId);
 
@@ -122,15 +157,20 @@ public class UserController {
         return new BaseResponse<>(result);
     }
 
-    /**
-     * 로그인 API
-     * [POST] /app/users/logIn
-     * @return BaseResponse<PostLoginRes>
-     */
+    /* 일반 유저 로그인 */
     @ResponseBody
     @PostMapping("/logIn")
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq){
-        // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
+
+        // 요청값 유효성 확인
+
+        if(postLoginReq.getUserID() == null){
+            return new BaseResponse<>(USERS_EMPTY_USERID);
+        }
+        if(postLoginReq.getPassword() == null){
+            return new BaseResponse<>(USERS_EMPTY_PASSWORD);
+        }
+
         // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
         PostLoginRes postLoginRes = userService.logIn(postLoginReq);
         return new BaseResponse<>(postLoginRes);
@@ -139,13 +179,14 @@ public class UserController {
 
     /**
      * 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url => Step01. '인가코드 받는 URI'
-     * [GET] /app/users/auth/:socialLoginType/login
+     * [GET] /app/users/auth/:socialLoginType/login => 현재 KAKAO만 설정됨.
      * @return void
      */
     @GetMapping("/auth/{socialLoginType}/login")
-    public void socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
+    public String socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
         SocialLoginType socialLoginType= SocialLoginType.valueOf(SocialLoginPath.toUpperCase());
-        oAuthService.accessRequest(socialLoginType);
+        String redirectUrl = oAuthService.accessRequest(socialLoginType);
+        return redirectUrl;
     }
 
 
@@ -165,6 +206,4 @@ public class UserController {
         GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(socialLoginType,code);
         return new BaseResponse<>(getSocialOAuthRes);
     }
-
-
 }
