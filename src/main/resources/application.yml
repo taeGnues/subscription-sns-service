@@ -10,6 +10,8 @@ spring:
       on-profile: "common"
   application:
     name: demo
+    firebase-configuration-file: ./serviceAccountKey.json
+    firebase-bucket: gridgetest-2a0c6.appspot.com
   sql:
     init:
       platform: mysql
@@ -24,6 +26,7 @@ spring:
       url: https://kauth.kakao.com/oauth/authorize
       client-id: 7c8dce76f04cb7bcf9d265fa84c4dde2 # 앱 REST API 키
       callback-login-url: http://localhost:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
+
 #    google:
 #      url: https://accounts.google.com/o/oauth2/v2/auth
 #      client-id: # client-id

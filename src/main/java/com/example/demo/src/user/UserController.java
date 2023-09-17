@@ -108,12 +108,7 @@ public class UserController {
 //        return new BaseResponse<>(getUsersRes);
 //    }
 
-    /**
-     * 회원 1명 조회 API
-     * [GET] /app/users/:userId
-     * @return BaseResponse<GetUserRes>
-     */
-    // Path-variable
+    /* 회원 1명 조회 API */
     @ResponseBody
     @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userId
     public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") Long userIdx) {
@@ -177,11 +172,7 @@ public class UserController {
     }
 
 
-    /**
-     * 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url => Step01. '인가코드 받는 URI'
-     * [GET] /app/users/auth/:socialLoginType/login => 현재 KAKAO만 설정됨.
-     * @return void
-     */
+    /* 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url => Step01. '인가코드 받는 URI' 생성 */
     @GetMapping("/auth/{socialLoginType}/login")
     public String socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
         SocialLoginType socialLoginType= SocialLoginType.valueOf(SocialLoginPath.toUpperCase());
@@ -190,12 +181,7 @@ public class UserController {
     }
 
 
-    /**
-     * Social Login API Server 요청에 의한 callback 을 처리
-     * @param socialLoginPath (GOOGLE, FACEBOOK, NAVER, KAKAO)
-     * @param code API Server 로부터 넘어오는 code
-     * @return SNS Login 요청 결과로 받은 Json 형태의 java 객체 (access_token, jwt_token, user_num 등)
-     */
+    /* Social Login API Server 요청에 의한 callback 을 처리, SNS Login 요청 결과로 받은 Json 형태의 java 객체 (access_token, jwt_token, user_num 등) */
     @ResponseBody
     @GetMapping(value = "/auth/{socialLoginType}/login/callback")
     public BaseResponse<GetSocialOAuthRes> socialLoginCallback(
