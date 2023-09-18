@@ -2,7 +2,9 @@ package com.example.demo.src.board.model;
 
 import com.example.demo.src.board.entity.Comment;
 import com.example.demo.src.board.entity.Post;
+import com.example.demo.src.board.entity.Report;
 import com.example.demo.src.user.entity.User;
+import com.google.firebase.database.core.Repo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,18 +19,19 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class PostReportReq {
 
-    @NotNull(message = "사용자 정보가 필요합니다.")
-    private Long userIdx;
+    private Long postIdx;
 
-    @NotBlank(message = "댓글 내용을 입력해주세요.")
-    private String content;
+    private Long commentIdx;
 
-    public Comment toEntity(User user, Post post) {
+    @NotBlank(message = "신고 내역이 필요합니다.")
+    private String reportContent;
 
-        return Comment.builder()
+    public Report toEntity(Comment comment, Post post) {
+
+        return Report.builder()
                 .post(post)
-                .user(user)
-                .content(content)
+                .comment(comment)
+                .reportContent(reportContent)
                 .build();
     }
 

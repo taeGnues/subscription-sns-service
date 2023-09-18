@@ -5,9 +5,11 @@ package com.example.demo.src.board;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.src.board.entity.Comment;
 import com.example.demo.src.board.entity.Post;
+import com.example.demo.src.board.entity.Report;
 import com.example.demo.src.board.model.*;
 import com.example.demo.src.board.repositories.CommentRepository;
 import com.example.demo.src.board.repositories.PostRepository;
+import com.example.demo.src.board.repositories.ReportRepository;
 import com.example.demo.src.user.UserRepository;
 import com.example.demo.src.user.entity.User;
 import com.example.demo.utils.JwtService;
@@ -31,6 +33,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final ReportRepository reportRepository;
     private final JwtService jwtService;
 
 
@@ -140,6 +143,32 @@ public class PostService {
         }
     }
 
+    /* 게시물 조회 (전체) */
+    @Transactional(readOnly = true)
+    public GetUserFeedPostRes readAllPosts(int pageNo, int pageSize) {
+
+        List<GetPostRes> getPostResList = new ArrayList<>();
+
+        try {
+            List<Post> res = postRepository.findPosts(PageRequest.of(pageNo, pageSize));
+
+            for(Post post : res){
+                GetPostRes getPostRes = post.toGetPostRes(); // 변환
+                getPostResList.add(getPostRes);
+            }
+
+            return GetUserFeedPostRes.builder()
+                    .getPostResList(getPostResList)
+                    .pageNo(pageNo)
+                    .pageSize(pageSize)
+                    .build();
+
+        }catch (BaseException e){
+            e.printStackTrace();
+            throw new BaseException(BOARD_EMPTY_POST);
+        }
+    }
+
     /* 댓글 작성 */
     @Transactional
     public PostCommentRes createComment(Long userIdx, Long postIdx, PostCommentReq postCommentReq) {
@@ -195,8 +224,73 @@ public class PostService {
         }
     }
 
-    /* 신고 */
+
+    /* 신고 등록 */
+    @Transactional
+    public void createReport(PostReportReq postReportReq) {
+        Report saveReport;
+        Comment comment = null;
+        Post post = null;
+
+        try {
+            if(postReportReq.getCommentIdx()!=null){
+                 comment = commentRepository.findByCommentIdxAndState(postReportReq.getCommentIdx(), ACTIVE)
+                        .orElseThrow(() -> new BaseException(BOARD_NOT_FIND_COMMENT));
+            }
+            if(postReportReq.getPostIdx()!=null){
+                post = postRepository.findByPostIdxAndState(postReportReq.getPostIdx(), ACTIVE)
+                        .orElseThrow(() -> new BaseException(BOARD_NOT_FIND_POST));
+            }
+
+            reportRepository.save(postReportReq.toEntity(comment, post));
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(BOARD_REPORT_SAVE_FAILED);
+        }
+    }
+
+    /* 신고 조회 (전체) */
+    @Transactional(readOnly = true)
+    public GetAllReportRes readAllReports(int pageNo, int pageSize) {
+
+        List<GetReportRes> getReportResList = new ArrayList<>();
+
+        try {
+            List<Report> res = reportRepository.findReports(PageRequest.of(pageNo, pageSize));
+            GetReportRes getReportRes= new GetReportRes();
+            for(Report report : res){
+                Post reportPost = report.getPost();
+                Comment reportComment = report.getComment();
+
+                if(reportPost != null && reportPost.getPostIdx() != null){
+                    getReportRes = report.toGetReportRes(report.getReportIdx(), "게시글");
+                }else if(reportComment != null && reportComment.getCommentIdx() != null){
+                    getReportRes = report.toGetReportRes(report.getReportIdx(), "댓글");
+                }
 
 
+                getReportResList.add(getReportRes);
+            }
+
+            return GetAllReportRes.builder()
+                    .getReportResList(getReportResList)
+                    .pageNo(pageNo)
+                    .pageSize(pageSize)
+                    .build();
+
+        }catch (BaseException e){
+            e.printStackTrace();
+            throw new BaseException(BOARD_EMPTY_REPORT);
+        }
+    }
+
+    /* 신고 삭제 */
+    @Transactional
+    public void deleteReport(Long reportIdx) {
+        Report report = reportRepository.findByReportIdxAndState(reportIdx, ACTIVE)
+                .orElseThrow(() -> new BaseException(BOARD_NOT_FIND_POST));
+        report.deleteReport();
+    }
 
 }

@@ -3,6 +3,7 @@ package com.example.demo.src.board.repositories;
 import com.example.demo.src.board.entity.Post;
 import com.example.demo.src.user.entity.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p where p.user.userIdx = :userIdx")
     List<Post> findMyPosts(@Param("userIdx") Long userIdx, Pageable pageable);
+
+    @Query("select p from Post p order by p.createdAt ASC")
+    List<Post> findPosts(Pageable pageable);
 }

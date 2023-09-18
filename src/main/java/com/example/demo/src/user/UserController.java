@@ -88,13 +88,7 @@ public class UserController {
         return new BaseResponse<>(res);
     }
 
-    /** 전체 회원 조회
-     * 회원 조회 API
-     * [GET] /users
-     * 회원 번호 및 전화번호 검색 조회 API
-     * [GET] /app/users? Email=
-     * @return BaseResponse<List<GetUserRes>>
-     */
+
     //Query String
 //    @ResponseBody
 //    @GetMapping("") // (GET) 127.0.0.1:9000/app/users
@@ -192,4 +186,9 @@ public class UserController {
         GetSocialOAuthRes getSocialOAuthRes = oAuthService.oAuthLoginOrJoin(socialLoginType,code);
         return new BaseResponse<>(getSocialOAuthRes);
     }
+
+    /* ADMIN : 유저 조회 API (전체) */
+    /* ADMIN : 유저 상세 조회 API */
+    /* ADMIN : 유저 상태 변경 API */
+
 }

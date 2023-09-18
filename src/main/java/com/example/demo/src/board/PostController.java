@@ -151,13 +151,68 @@ public class PostController {
     }
 
 
-    /* 신고 API */
+    /* 신고 등록 API */
+    @ResponseBody // BODY
+    @PostMapping("/report")
+    public BaseResponse<String> createReport(
+            @Valid @RequestBody PostReportReq postReportReq) {
 
+        if(postReportReq.getPostIdx()==null && postReportReq.getCommentIdx()==null){
+            return new BaseResponse<>(BOARD_REPORT_UNKNOWN);
+        }
 
-
+        try{
+            postService.createReport(postReportReq);
+            return new BaseResponse<>(SUCCESS);
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     /* ADMIN : 게시물 조회 API (전체) */
-    /* ADMIN : 게시물 조회 API (전체) */
-    /* ADMIN : 댓글 삭제 API (전체) */
+    @ResponseBody
+    @GetMapping("")
+    public BaseResponse<GetUserFeedPostRes> readAllPosts(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "3", required = false) int pageSize
+            ){
+        try {
+            GetUserFeedPostRes getUserFeedPostRes = postService.readAllPosts(pageNo, pageSize);
+            return new BaseResponse<>(getUserFeedPostRes);
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /* ADMIN : 신고 조회 API (전체) */
+    @ResponseBody
+    @GetMapping("/reports")
+    public BaseResponse<GetAllReportRes> readAllreports(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "3", required = false) int pageSize
+    ){
+        try {
+            GetAllReportRes getAllReportRes = postService.readAllReports(pageNo, pageSize);
+            return new BaseResponse<>(getAllReportRes);
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /* ADMIN : 신고 삭제 API */
+    @DeleteMapping("/reports/{reportIdx}")
+    public BaseResponse<String> deleteReport(@PathVariable Long reportIdx){
+        try{
+
+            postService.deleteReport(reportIdx);
+
+            return new BaseResponse<>(SUCCESS);
+
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+
 
 }
