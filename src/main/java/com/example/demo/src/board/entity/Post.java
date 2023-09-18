@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +55,7 @@ public class Post extends BaseEntity {
         this.user = user;
         this.content = content;
         this.postImgPaths = postImgPaths;
-    }
+    } // builder 패턴은 빼먹는 경우가 발생할 수 있어!!! 위험함. 따라서 엔티티는 생성자를 쓰자!
 
     public GetPostRes toGetPostRes(){
         return GetPostRes.builder()
@@ -71,7 +69,6 @@ public class Post extends BaseEntity {
 
 
     /* 연관관계 메소드 */
-
 
     public void updatePost(String content){
         this.content = content;

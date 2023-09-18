@@ -27,8 +27,12 @@ public enum BaseResponseStatus {
     USERS_INFO_UNKNOWN(false, HttpStatus.BAD_REQUEST.value(), "알 수 없는 유저입니다."),
 
     BOARD_POST_SAVE_FAILED(false, HttpStatus.BAD_REQUEST.value(), "게시물 저장에 실패했습니다."),
+    BOARD_COMMENT_SAVE_FAILED(false, HttpStatus.BAD_REQUEST.value(), "댓글 저장에 실패했습니다."),
+
+
     BOARD_NOT_FIND_POST(false,HttpStatus.NOT_FOUND.value(),"삭제됐거나 존재하지 않는 게시물입니다."),
     BOARD_EMPTY_POST(false,HttpStatus.NOT_FOUND.value(),"조회할 게시물이 없습니다."),
+    BOARD_EMPTY_COMMENT(false,HttpStatus.NOT_FOUND.value(),"조회할 댓글이 없습니다."),
 
     TEST_EMPTY_COMMENT(false, HttpStatus.BAD_REQUEST.value(), "코멘트를 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, HttpStatus.BAD_REQUEST.value(), "이메일 형식을 확인해주세요."),

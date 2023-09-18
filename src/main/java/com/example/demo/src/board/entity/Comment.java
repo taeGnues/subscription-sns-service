@@ -1,12 +1,11 @@
 package com.example.demo.src.board.entity;
 
 import com.example.demo.common.entity.BaseEntity;
+import com.example.demo.src.board.model.GetCommentRes;
+import com.example.demo.src.board.model.GetPostRes;
 import com.example.demo.src.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -41,6 +40,26 @@ public class Comment extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Report> reports = new ArrayList<Report>(); // 신고 내역
+
+    @Builder
+    public Comment(Post post, User user, String content, List<Report> reports) {
+        this.post = post;
+        this.user = user;
+        this.content = content;
+        this.reports = reports;
+    }
+
+    public GetCommentRes toGetCommentRes(){
+        return GetCommentRes.builder()
+                .userIdx(user.getUserIdx())
+                .userId(user.getUserID())
+                .content(content)
+                .build();
+    }
+
+    public void deleteComment() {
+        this.state = State.INACTIVE;
+    }
 
     public void setPost(Post post) {
         this.post = post;
