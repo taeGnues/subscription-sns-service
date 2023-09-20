@@ -1,15 +1,16 @@
-package com.example.demo.src.user.model;
+package com.example.demo.src.board.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostLoginReq {
-    private String userID;
-    private String password;
+public class PostPostRes {
+    private Long postIdx;
 }

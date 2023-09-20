@@ -28,14 +28,14 @@ public class JwtService {
     @param userId
     @return String
      */
-    public String createJwt(Long userId){
+    public String createJwt(Long userIdx){
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("userIdx",userId)
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
-                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .claim("userIdx",userIdx)
+                .setIssuedAt(now) // 토큰 발급일
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365))) // 만료일 1년
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY) // 알고리즘
                 .compact();
     }
 
@@ -49,11 +49,11 @@ public class JwtService {
     }
 
     /*
-    JWT에서 userId 추출
+    JWT에서 userIdx 추출
     @return Long
     @throws BaseException
      */
-    public Long getUserId() throws BaseException{
+    public Long getUserIdx() throws BaseException{
         //1. JWT 추출
         String accessToken = getJwt();
         if(accessToken == null || accessToken.length() == 0){
@@ -71,7 +71,7 @@ public class JwtService {
         }
 
         // 3. userIdx 추출
-        return claims.getBody().get("userId",Long.class);
+        return claims.getBody().get("userIdx",Long.class);
     }
 
 }

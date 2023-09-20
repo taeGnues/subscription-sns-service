@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostLoginReq {
-    private String userID;
+public class PatchPwdReq {
+    private Long userIdx;
     private String password;
 }
