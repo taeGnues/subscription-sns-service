@@ -9,6 +9,8 @@ import com.example.demo.src.board.model.*;
 import com.example.demo.src.pay.model.GetPaymentSubsRes;
 import com.example.demo.src.pay.model.PostPaymentReq;
 import com.example.demo.utils.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ import static com.example.demo.common.response.BaseResponseStatus.SUCCESS;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/app/payment")
+@Tag(name="Pay", description = "Pay API")
 public class PayController {
 
 
@@ -38,6 +41,8 @@ public class PayController {
 
     @ResponseBody // BODY
     @PostMapping("/validate")
+    @Tag(name="Pay")
+    @Operation(summary = "주문 내역 및 구독 등록", description = "결제 성공 후 주문 내역과 구독 상태를 등록한다.")
     public BaseResponse<String> createPayment(@Valid @RequestBody PostPaymentReq postPaymentReq) {
         // 형식적 데이터 검사.
         try{
@@ -52,6 +57,8 @@ public class PayController {
 
     /* 구독 취소 API */
     @PatchMapping("/{userIdx}")
+    @Tag(name="Pay")
+    @Operation(summary = "구독 취소", description = "구독 상태를 취소로 변경한다.")
     public BaseResponse<String> unactivatedSubs(@PathVariable Long userIdx){
         try{
 
@@ -68,6 +75,8 @@ public class PayController {
     /* ADMIN : 구독 조회 API */
     @ResponseBody
     @GetMapping("/admin/subs")
+    @Tag(name="Pay")
+    @Operation(summary = "회원 구독 내역 조회", description = "구독 상태를 취소로 변경한다.")
     public BaseResponse<List<GetPaymentSubsRes>> readAllSubscriptionHistory(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "3", required = false) int pageSize){

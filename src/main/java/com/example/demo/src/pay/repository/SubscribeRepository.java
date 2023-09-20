@@ -17,6 +17,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @Query("select s from Subscribe s where s.user.userIdx = :userIdx")
     Optional<Subscribe> findSubsByUserIdx(@Param("userIdx") Long userIdx);
 
-    @Query("select u.userIdx, u.userID, s.subsStartAt, s.subsEndAt, s.subsState from Subscribe s, User u where s.user.userIdx = u.userIdx")
+    @Query("select new com.example.demo.src.pay.model.GetPaymentSubsRes(u.userIdx, u.userID, u.name, s.subsStartAt, s.subsEndAt, s.subsState) from Subscribe s join s.user u")
     List<GetPaymentSubsRes> findAllSubs(Pageable pageable);
+
 }

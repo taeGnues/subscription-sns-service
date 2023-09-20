@@ -4,6 +4,10 @@ package com.example.demo.src.user;
 import com.example.demo.common.Constant.SocialLoginType;
 import com.example.demo.common.oauth.OAuthService;
 import com.example.demo.utils.JwtService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.models.annotations.OpenAPI30;
 import lombok.RequiredArgsConstructor;
 import com.example.demo.common.exceptions.BaseException;
 import com.example.demo.common.response.BaseResponse;
@@ -12,16 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 
 import static com.example.demo.common.response.BaseResponseStatus.*;
-import static com.example.demo.utils.ValidationRegex.isRegexEmail;
+
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/app/users")
+@Tag(name="User", description = "User API")
 public class UserController {
 
 
@@ -35,6 +39,7 @@ public class UserController {
     /* 일반 회원 가입 API */
     @ResponseBody // BODY
     @PostMapping("")
+    @Operation(summary = "일반 회원 가입", description = "postUserReq에 정보에 맞는 회원을 생성한다.")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         // 형식적 데이터 검사.
 
@@ -65,6 +70,7 @@ public class UserController {
     /* GET */
     @ResponseBody
     @GetMapping("/changepwd")
+    @Operation(summary = "전화번호로 회원 찾기", description = "전화번호에 맞는 회원을 찾아 userIdx를 리턴한다.")
     public BaseResponse<Long> findUserByPhoneNum(@RequestBody PostPhoneNumReq postPhoneNumReq){
         if(postPhoneNumReq.getPhoneNum() == null){
             return new BaseResponse<>(USERS_EMPTY_PHONENUM);
@@ -78,6 +84,7 @@ public class UserController {
     /* userIdx로 찾은 유저 비밀번호 변경해주기 */
     @ResponseBody
     @PatchMapping("/changepwd")
+    @Operation(summary = "userIdx로 회원 비밀번호 수정", description = "userIdx로 회원 정보를 찾은 후 비밀번호를 수정한다.")
     public BaseResponse<String> changePassword(@RequestBody PatchPwdReq patchPwdReq){
         if(patchPwdReq.getUserIdx() == null){
             return new BaseResponse<>(USERS_INFO_UNKNOWN);
@@ -88,55 +95,18 @@ public class UserController {
         return new BaseResponse<>(res);
     }
 
-
-    //Query String
-//    @ResponseBody
-//    @GetMapping("") // (GET) 127.0.0.1:9000/app/users
-//    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String Email) {
-//        if(Email == null){
-//            List<GetUserRes> getUsersRes = userService.getUsers();
-//            return new BaseResponse<>(getUsersRes);
-//        }
-//        // Get Users
-//        List<GetUserRes> getUsersRes = userService.getUsers(Email);
-//        return new BaseResponse<>(getUsersRes);
-//    }
-
     /* 회원 1명 조회 API */
     @ResponseBody
     @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userId
+    @Operation(summary = "회원 1명 조회", description = "userIdx에 맞는 회원을 조회한다.")
     public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") Long userIdx) {
         GetUserRes getUserRes = userService.getUser(userIdx);
         return new BaseResponse<>(getUserRes);
     }
 
-
-
-    /**
-     * 유저정보변경 API
-     * [PATCH] /app/users/:userId
-     * @return BaseResponse<String>
-     */
-//    @ResponseBody
-//    @PatchMapping("/{userIdx}")
-//    public BaseResponse<String> modifyUserName(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq){
-//
-//        Long jwtUserId = jwtService.getUserIdx();
-//
-//        userService.modifyUserName(userId, patchUserReq);
-//
-//        String result = "수정 완료!!";
-//        return new BaseResponse<>(result);
-//
-//    }
-
-    /**
-     * 유저정보삭제 API
-     * [DELETE] /app/users/:userId
-     * @return BaseResponse<String>
-     */
     @ResponseBody
     @DeleteMapping("/{userId}")
+    @Operation(summary = "회원 1명 삭제", description = "userIdx에 맞는 회원을 삭제한다.")
     public BaseResponse<String> deleteUser(@PathVariable("userId") Long userId){
         Long jwtUserId = jwtService.getUserIdx();
 
@@ -149,6 +119,7 @@ public class UserController {
     /* 일반 유저 로그인 */
     @ResponseBody
     @PostMapping("/logIn")
+    @Operation(summary = "일반 회원 로그인", description = "postLoginReq에 정보에 맞는 회원을 로그인 시킨 후 JWT을 발급한다.")
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq){
 
         // 요청값 유효성 확인
@@ -160,14 +131,15 @@ public class UserController {
             return new BaseResponse<>(USERS_EMPTY_PASSWORD);
         }
 
-        // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
         PostLoginRes postLoginRes = userService.logIn(postLoginReq);
         return new BaseResponse<>(postLoginRes);
     }
 
 
     /* 유저 소셜 가입, 로그인 인증으로 리다이렉트 해주는 url => Step01. '인가코드 받는 URI' 생성 */
+
     @GetMapping("/auth/{socialLoginType}/login")
+    @Operation(summary = "유저 소셜 로그인 redirectUrl", description = "소셜 가입(카카오)로 할 수 있는 redirectUrl를 리턴해준다.")
     public String socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
         SocialLoginType socialLoginType= SocialLoginType.valueOf(SocialLoginPath.toUpperCase());
         String redirectUrl = oAuthService.accessRequest(socialLoginType);
@@ -178,6 +150,7 @@ public class UserController {
     /* Social Login API Server 요청에 의한 callback 을 처리, SNS Login 요청 결과로 받은 Json 형태의 java 객체 (access_token, jwt_token, user_num 등) */
     @ResponseBody
     @GetMapping(value = "/auth/{socialLoginType}/login/callback")
+    @Operation(summary = "유저 소셜 정보로 가입", description = "소셜 정보로 회원가입 혹은 로그인을 진행한다.")
     public BaseResponse<GetSocialOAuthRes> socialLoginCallback(
             @PathVariable(name = "socialLoginType") String socialLoginPath,
             @RequestParam(name = "code") String code) throws IOException, BaseException{

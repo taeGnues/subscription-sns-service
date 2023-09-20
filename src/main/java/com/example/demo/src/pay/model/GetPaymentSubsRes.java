@@ -19,8 +19,9 @@ public class GetPaymentSubsRes {
 
     private Long userIdx;
     private String userID;
+    private String name;
     private LocalDate subsStartAt;
     private LocalDate subsEndAt;
-    private String subsState;
+    private Subscribe.SubsState subsState;
 
 }
