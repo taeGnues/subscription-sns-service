@@ -20,6 +20,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -59,6 +60,8 @@ dependencies {
     // firebase
     implementation ('com.google.firebase:firebase-admin:9.2.0')
 
+    // 포트원
+    implementation ('com.github.iamport:iamport-rest-client-java:0.2.21')
 
 
 }

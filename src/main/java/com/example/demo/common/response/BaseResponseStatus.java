@@ -26,6 +26,7 @@ public enum BaseResponseStatus {
     USERS_EMPTY_BIRTHDATE(false, HttpStatus.BAD_REQUEST.value(), "생년월일을 입력해주세요."),
     USERS_INFO_UNKNOWN(false, HttpStatus.BAD_REQUEST.value(), "알 수 없는 유저입니다."),
 
+
     BOARD_POST_SAVE_FAILED(false, HttpStatus.BAD_REQUEST.value(), "게시물 저장에 실패했습니다."),
     BOARD_COMMENT_SAVE_FAILED(false, HttpStatus.BAD_REQUEST.value(), "댓글 저장에 실패했습니다."),
     BOARD_REPORT_SAVE_FAILED(false, HttpStatus.BAD_REQUEST.value(), "신고 저장에 실패했습니다."),
@@ -37,6 +38,9 @@ public enum BaseResponseStatus {
     BOARD_EMPTY_POST(false,HttpStatus.NOT_FOUND.value(),"조회할 게시물이 없습니다."),
     BOARD_EMPTY_COMMENT(false,HttpStatus.NOT_FOUND.value(),"조회할 댓글이 없습니다."),
     BOARD_EMPTY_REPORT(false,HttpStatus.NOT_FOUND.value(),"신고 내역이 없습니다."),
+
+    PAY_SUBS_SAVE_FAILED(false, HttpStatus.BAD_REQUEST.value(), "구독에 실패했습니다."),
+    PAY_EMPTY_SUBS(false,HttpStatus.NOT_FOUND.value(),"조회할 구독 내역이 없습니다."),
 
     TEST_EMPTY_COMMENT(false, HttpStatus.BAD_REQUEST.value(), "코멘트를 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, HttpStatus.BAD_REQUEST.value(), "이메일 형식을 확인해주세요."),

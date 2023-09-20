@@ -3,6 +3,8 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.common.exceptions.BaseException;
+import com.example.demo.src.pay.entity.Subscribe;
+import com.example.demo.src.pay.repository.SubscribeRepository;
 import com.example.demo.src.user.entity.User;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
@@ -25,6 +27,7 @@ import static com.example.demo.common.response.BaseResponseStatus.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final SubscribeRepository subscribeRepository;
     private final JwtService jwtService;
 
 
@@ -48,6 +51,12 @@ public class UserService {
         }
 
         User saveUser = userRepository.save(postUserReq.toEntity());
+        subscribeRepository.save(
+                Subscribe.builder()
+                        .user(saveUser)
+                        .subsState(Subscribe.SubsState.UNSUBS)
+                        .build()
+        );
         return new PostUserRes(saveUser.getUserIdx());
 
     }
@@ -56,6 +65,13 @@ public class UserService {
     @Transactional
     public PostUserRes createOAuthUser(User user) {
         User saveUser = userRepository.save(user);
+
+        subscribeRepository.save(
+                Subscribe.builder()
+                        .user(saveUser)
+                        .subsState(Subscribe.SubsState.UNSUBS)
+                        .build()
+        );
 
         // JWT 발급
         String jwtToken = jwtService.createJwt(saveUser.getUserIdx());

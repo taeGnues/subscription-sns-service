@@ -26,6 +26,10 @@ spring:
       url: https://kauth.kakao.com/oauth/authorize
       client-id: 7c8dce76f04cb7bcf9d265fa84c4dde2 # 앱 REST API 키
       callback-login-url: http://localhost:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
+imp:
+  rest-api-key: 7752652165368632
+  rest-api-secret: py0wnuCIWs1c1efkCAQbwRVEqXVOgvev7WJAkxS9Vy4dACIMcNqZrhzEaHJcEo4fRAJyyNy7fdM0Qg4E
+
 
 #    google:
 #      url: https://accounts.google.com/o/oauth2/v2/auth

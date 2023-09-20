@@ -2,6 +2,9 @@ package com.example.demo.src.user.entity;
 
 import com.example.demo.common.entity.BaseEntity;
 import com.example.demo.src.board.entity.Post;
+import com.example.demo.src.pay.entity.Order;
+import com.example.demo.src.pay.entity.Subscribe;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -48,6 +51,13 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user") // 단방향 매핑 (연관관계 주인은 USER table, 한명의 user가 여러개의 posts를 가짐.)
     private List<Post> posts = new ArrayList<Post>(); // 지금까지 작성한 글 목록.
     // 가짜 매핑 - 주인의 반대편. 등록 수정은 불가..! 값을 조회만 가능
+
+    @OneToMany(mappedBy = "user") // 단방향 매핑 (연관관계 주인은 USER table, 한명의 user가 여러개의 orders 가짐.)
+    private List<Order> orders = new ArrayList<Order>(); // 지금까지 작성한 결제한 내역
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private Subscribe subscribe; // 구독정보와 유저는 일대일.
 
     @Builder
     public User(Long userIdx, String phoneNum, String name, String userID, String password, LocalDate birthDate, UserStatus userStatus, Timestamp lastestLoginAt) {
