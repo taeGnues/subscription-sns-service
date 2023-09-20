@@ -106,4 +106,81 @@ build.gradle // gradle 빌드시에 필요한 dependency 설정하는 곳
 
 ### API 명세서 (SWAGGER)
 
-pdf 참조.
+swagger 참조.
+
+### 클라이언트 측 결제 API 사용하기
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- jQuery -->
+    <script
+            type="text/javascript"
+            src="https://code.jquery.com/jquery-1.12.4.min.js"
+    ></script>
+    <!-- iamport.payment.js -->
+    <script
+            type="text/javascript"
+            src="https://cdn.iamport.kr/v1/iamport.js"
+    ></script>
+    <script>
+        var IMP = window.IMP;
+        IMP.init("imp78361530"); // 가맹점 코드를 넣을 것.
+
+        function requestPay() {
+            IMP.request_pay(
+
+                {
+                    pg: "html5_inicis.INIBillTst", //KG이니시스 pg파라미터 값
+                    pay_method : 'card', // card 고정
+                    merchant_uid: "subs_no_0020", //상점에서 생성한 고유 주문번호 (거래 1회 시도마다 다른값으로 변경해야함.)
+                    name : 'Tnovel 서비스 구독',
+                    amount : 1, // 결제 금액
+                    buyer_email : 'test@portone.io',
+                    buyer_name : '구매자이름',
+                    buyer_tel : '010-1234-1234',   //전화번호, 필수 파라미터 입니다.
+                    buyer_addr : '서울특별시 강남구 삼성동',
+                    buyer_postcode : '123-456',
+                    m_redirect_url : '{모바일에서 결제 완료 후 리디렉션 될 URL}',
+                    escrow : true, //에스크로 결제인 경우 설정
+                    vbank_due : 'YYYYMMDD',
+     	
+                },
+                function (rsp) {
+      				//rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
+                    if (rsp.success) {
+                        $.ajax({
+                            url: "http://localhost:9000/app/payment/validate/", // 결제 성공 후 구독 요청 (배포 후에 URL이 바뀔 예정)
+                            method: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                userIdx: 2, // 사용자
+                                imp_uid: rsp.imp_uid,            // 결제 고유번호
+                                merchant_uid: rsp.merchant_uid,   // 주문번호
+                                amount: rsp.paid_amount // 주문금액
+                            }),
+                        }).done(function (data) {
+                            alert("결제 후 구독에 성공했습니다!");
+                        })
+                    } else {
+                        alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
+                    }
+                }
+                
+            );
+        }
+    </script>
+    <meta charset="UTF-8"/>
+    <title>Sample Payment</title>
+</head>
+<body>
+<button onclick="requestPay()">결제하기</button>
+<!-- 결제하기 버튼 생성 -->
+</body>
+</html>
+```
+
+- 클라이언트 측에서 위와 같은 코드를 작성하고 원하는 유저아이디를 지정한 후
+버튼을 누르면 결제가 성공한 이후 구독이 자동적으로 이뤄진다.
+- 단, merchant_uid는 매 결제 시도 시 다른 임의의 값으로 변경해줘야한다.
