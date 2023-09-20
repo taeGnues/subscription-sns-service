@@ -139,7 +139,7 @@ swagger 참조.
                     amount : 1, // 결제 금액
                     buyer_email : 'test@portone.io',
                     buyer_name : '구매자이름',
-                    buyer_tel : '010-1234-1234',   //전화번호, 필수 파라미터 입니다.
+                    buyer_tel : '010-1234-1234',   // 전화번호, 필수 파라미터 입니다.
                     buyer_addr : '서울특별시 강남구 삼성동',
                     buyer_postcode : '123-456',
                     m_redirect_url : '{모바일에서 결제 완료 후 리디렉션 될 URL}',
