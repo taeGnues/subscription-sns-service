@@ -9,16 +9,16 @@ spring:
     activate:
       on-profile: "common"
   application:
-    name: demo
+    name: tnovel-service
     firebase-configuration-file: ./serviceAccountKey.json
     firebase-bucket: gridgetest-2a0c6.appspot.com
   sql:
     init:
       platform: mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/gridgestagram?autoReconnect=true&setTimezone=Asia/Seoul # 변경해주세요
-    username: root
-    password: a01084204241
+    url: jdbc:mysql://${RDS_HOSTNAME:localhost}:${RDS_PORT:3306}/${RDS_DB_NAME:gridgestagram}
+    username: ${RDS_USERNAME:root}
+    password: ${RDS_PASSWORD:a01084204241}
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
     # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
   OAuth2:
@@ -30,16 +30,8 @@ imp:
   rest-api-key: 7752652165368632
   rest-api-secret: py0wnuCIWs1c1efkCAQbwRVEqXVOgvev7WJAkxS9Vy4dACIMcNqZrhzEaHJcEo4fRAJyyNy7fdM0Qg4E
 
-
-#    google:
-#      url: https://accounts.google.com/o/oauth2/v2/auth
-#      client-id: # client-id
-#      client-secret:  # client-secret
-#      callback-login-url: http://localhost:9000/app/users/auth/google/login/callback # 등록한 정보에 맞게 수정해주세요
-#      scope: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile # 등록한 정보에 맞게 수정해주세요
-
 server:
-  port: 9000
+  port: 5000
 
 springdoc:
   swagger-ui:
@@ -91,10 +83,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    generate-ddl: false
+    generate-ddl: true # DDL 문 자동 생성
     show-sql: true
     properties:
       hibernate:

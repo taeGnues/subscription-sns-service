@@ -3,3 +3,4 @@ build/
 logs/
 .idea/
 out/
+src/main/java/com/example/demo/common/secret
