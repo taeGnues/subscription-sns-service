@@ -95,14 +95,14 @@ build.gradle // gradle 빌드시에 필요한 dependency 설정하는 곳
 ## ✨Description
 
 ### ERD
-![](/Users/gnues/Downloads/Gridgestagram_20230920_234707.jpg)
+![Gridgestagram_20230920_234707](https://github.com/Gridge-Test/jinu-85/assets/112752089/dd56e790-9ad9-400f-83fe-70746efa7f80)
 
 자세한 링크는 https://aquerytool.com/aquerymain/index/?rurl=0993eee7-e3ee-4fde-bd1e-b6dac07d5f89 확인
 (비밀번호 : 3ehs35)
 
 ### 서비스 구성도
+![스크린샷 2023-09-20 오후 11 54 18](https://github.com/Gridge-Test/jinu-85/assets/112752089/d9bd10d6-49c3-441d-bf8a-70ad843cfed1)
 
-![](/Users/gnues/Desktop/스크린샷 2023-09-20 오후 11.54.18.png)
 
 ### API 명세서 (SWAGGER)
 
