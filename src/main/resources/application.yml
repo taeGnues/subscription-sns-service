@@ -16,7 +16,7 @@ spring:
     init:
       platform: mysql
   datasource:
-    url: jdbc:mysql://${RDS_HOSTNAME:localhost}:${RDS_PORT:3306}/${RDS_DB_NAME:gridgestagram}
+    url: jdbc:mysql://${RDS_HOSTNAME:3.37.127.55}:${RDS_PORT:3306}/${RDS_DB_NAME:gridgestagram}
     username: ${RDS_USERNAME:root}
     password: ${RDS_PASSWORD:a01084204241}
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
@@ -25,13 +25,13 @@ spring:
     kakao:
       url: https://kauth.kakao.com/oauth/authorize
       client-id: 7c8dce76f04cb7bcf9d265fa84c4dde2 # 앱 REST API 키
-      callback-login-url: http://localhost:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
+      callback-login-url: http://3.37.127.55:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
 imp:
   rest-api-key: 7752652165368632
   rest-api-secret: py0wnuCIWs1c1efkCAQbwRVEqXVOgvev7WJAkxS9Vy4dACIMcNqZrhzEaHJcEo4fRAJyyNy7fdM0Qg4E
 
 server:
-  port: 5000
+  port: 9000
 
 springdoc:
   swagger-ui:
