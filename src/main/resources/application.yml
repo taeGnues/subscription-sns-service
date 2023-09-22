@@ -16,16 +16,16 @@ spring:
     init:
       platform: mysql
   datasource:
-    url: jdbc:mysql://${RDS_HOSTNAME:3.37.127.55}:${RDS_PORT:3306}/${RDS_DB_NAME:gridgestagram}
-    username: ${RDS_USERNAME:root}
-    password: ${RDS_PASSWORD:a01084204241}
+    url: jdbc:mysql://gridgestagram.cqshbbmfqyuc.ap-northeast-2.rds.amazonaws.com:3306/gridgestagram?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: a01084204241
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
     # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
   OAuth2:
     kakao:
       url: https://kauth.kakao.com/oauth/authorize
       client-id: 7c8dce76f04cb7bcf9d265fa84c4dde2 # 앱 REST API 키
-      callback-login-url: http://3.37.127.55:9000/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
+      callback-login-url: http://localhost/app/users/auth/kakao/login/callback # 인가 코드 전달받을 서비스 서버의 URI
 imp:
   rest-api-key: 7752652165368632
   rest-api-secret: py0wnuCIWs1c1efkCAQbwRVEqXVOgvev7WJAkxS9Vy4dACIMcNqZrhzEaHJcEo4fRAJyyNy7fdM0Qg4E
@@ -74,7 +74,6 @@ spring:
     properties:
       hibernate:
         format_sql: false
-
 ---
 spring:
   config:
@@ -86,7 +85,7 @@ spring:
       ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    generate-ddl: true # DDL 문 자동 생성
+    generate-ddl: false # DDL 문 자동 생성
     show-sql: true
     properties:
       hibernate:
