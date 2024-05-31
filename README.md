@@ -1,9 +1,26 @@
-# Tnovel Backend Service
-Tnovel Backend Structure 설명 README 파일입니다.
+# 구독형 SNS Service
+구독형 SNS 서비스 설명 README 파일입니다.
 
 ## ✨Common
 ### REST API
-Tnovel REST API는 Spring Boot로 제작했다.
+REST API는 Spring Boot로 제작했다.
+본 서비스는 다음과 같은 기능을 가지고 있다.
+
+#### USER-API
+- JWT 기반의 일반 로그인
+- 카카오 로그인
+- 회원가입
+- 회원 관리를 위한 어드민용 API (회원 상태 변경, 삭제)
+
+#### POST-API
+- 게시물 CRUD
+- 댓글 CRUD
+- 신고 기능 CRUD
+- 게시물 및 댓글 관리를 위한
+
+#### PAY-API
+- 아임포트를 활용한 결제 API (서비스 이용 전, 서비스에 대한 결제가 이뤄져야함)
+- 결제 내역 CRUD
 
 ### Folder Structure
 - `src`: 메인 로직
