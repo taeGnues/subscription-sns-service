@@ -1,4 +1,4 @@
-# 구독형 SNS Service
+# 구독형 SNS Service
 구독형 SNS 서비스 설명 README 파일입니다.
 
 ## ✨Common
